@@ -3,7 +3,7 @@ import Event from "../pages/Event";
 
 export interface IRoute {
     path: string,
-    component: JSX.Element
+    element: JSX.Element
 }
 
 export enum RouteNames {
@@ -12,9 +12,9 @@ export enum RouteNames {
 }
 
 export const publicRoutes: IRoute[] = [
-    {path: RouteNames.LOGIN, component: <Login/>},
+    {path: RouteNames.LOGIN, element: <Login/>},
 ]
 
 export const privateRoutes: IRoute[] = [
-    {path: RouteNames.EVENT, component: <Event/>},
+    {path: RouteNames.EVENT, element: <Event/>},
 ]
