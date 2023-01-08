@@ -4,7 +4,11 @@ import {privateRoutes, publicRoutes} from "../router";
 import {Navigate} from "react-router-dom";
 
 const AppRouter = () => {
-    const auth = false
+    if(localStorage.getItem("isLogged") === undefined) {
+        localStorage.setItem("isLogged", "false")
+    }
+
+    const auth = JSON.parse(localStorage.getItem("isLogged") as string)
 
     return (
         <div>
