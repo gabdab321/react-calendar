@@ -2,18 +2,21 @@ import React from 'react';
 import {Routes, Route} from "react-router-dom";
 import {privateRoutes, publicRoutes} from "../router";
 import {Navigate} from "react-router-dom";
+import Navbar from "./Navbar/Navbar";
+import {useAppSelector} from "../hooks/redux";
 
 const AppRouter = () => {
-    if(localStorage.getItem("isLogged") === undefined) {
+    if(localStorage.getItem("isLogged") === null) {
         localStorage.setItem("isLogged", "false")
     }
 
-    const auth = JSON.parse(localStorage.getItem("isLogged") as string)
+    const isLogged = useAppSelector((state) => state.auth.isLogged)
 
     return (
         <div>
+            <Navbar />
             {
-                auth
+                isLogged
                     ?
                     <Routes>
                         {privateRoutes.map(route => <Route key={route.path} {...route}/>)}

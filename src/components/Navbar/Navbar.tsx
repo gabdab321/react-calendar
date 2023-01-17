@@ -1,19 +1,34 @@
 import React from 'react';
 import {Button, Layout} from "antd";
 import classes from "./Navbar.module.scss"
+import {useAppDispatch, useAppSelector} from "../../hooks/redux";
+import {showLoginModal, showSignModal} from "../../redux/slices/modalsSlice";
+import {setAuth} from "../../redux/slices/authSlice";
 
-interface NavbarProps {
-    showLoginModal: any,
-    showSignModal: any
-}
+const Navbar = () => {
+    const dispatch = useAppDispatch()
 
-const Navbar = ({showLoginModal, showSignModal}: NavbarProps) => {
+    const isLogged = useAppSelector(state => state.auth.isLogged)
+    const username = localStorage.getItem("username")
+
+    function logOut() {
+        localStorage.setItem("isLogged", "false")
+        dispatch(setAuth(false))
+    }
+
     return (
-        <Layout.Header style={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
-            <p className={classes.nick}>GabDab321`s</p>
+        <Layout.Header className={classes.main}>
+            <p className={classes.nick}>{isLogged ? username+"`s" : "Calendar"}</p>
             <div>
-                <Button size="large" style={{marginRight: "15px"}} onClick={showSignModal}>Sign Up</Button>
-                <Button size="large" onClick={showLoginModal}>Log In</Button>
+                {isLogged
+                    ?
+                    <Button size="large" onClick={logOut}>Log Out</Button>
+                    :
+                    <>
+                        <Button size="large" style={{marginRight: "15px"}} onClick={() => dispatch(showSignModal())}>Sign Up</Button>
+                        <Button size="large" onClick={() => dispatch(showLoginModal())}>Log In</Button>
+                    </>
+                }
             </div>
         </Layout.Header>
     );

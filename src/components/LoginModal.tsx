@@ -1,26 +1,15 @@
 import React, {useState} from 'react';
-import {Button, Input, Modal} from "antd";
+import {Alert, Input, Modal} from "antd";
+import {setAuth} from "../redux/slices/authSlice";
+import {useAppDispatch, useAppSelector} from "../hooks/redux";
+import {setIsLoginModalOpen} from "../redux/slices/modalsSlice";
 
-interface LoginModalProps {
-    isModalOpen: boolean,
-    setIsModalOpen: any
-}
+const LoginModal = () => {
+    const dispatch = useAppDispatch()
+    const isLoginModalOpen = useAppSelector(state => state.modals.isLoginModalOpen)
 
-const LoginModal = ({isModalOpen, setIsModalOpen}: LoginModalProps) => {
+    const [isError, setIsError] = useState(false)
     const [userData, setUserData] = useState({username: "", password: ""})
-
-    function login() {
-        const username = localStorage.getItem("username")
-        const password = localStorage.getItem("password")
-
-        if(username === userData.username && password === userData.password) {
-            localStorage.setItem("isLogged", "true")
-        }else {
-            localStorage.setItem("isLogged", "false")
-        }
-
-        return false
-    }
 
     function handleUsername(e: React.ChangeEvent<HTMLInputElement>) {
         setUserData({...userData, username: e.target.value})
@@ -31,19 +20,37 @@ const LoginModal = ({isModalOpen, setIsModalOpen}: LoginModalProps) => {
     }
 
     const handleOk = () => {
-        login()
-        setIsModalOpen(false);
+        const username = localStorage.getItem("username")
+        const password = localStorage.getItem("password")
+
+        if(username === userData.username && password === userData.password) {
+            dispatch(setAuth(true))
+            dispatch(setIsLoginModalOpen(false))
+            return true
+        }else {
+            dispatch(setAuth(false))
+            setIsError(true)
+            return false
+        }
     };
 
     const handleCancel = () => {
-        setIsModalOpen(false);
+        dispatch(setIsLoginModalOpen(false))
     };
 
     return (
         <>
-            <Modal title="Log In" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+            <Modal title="Log In" open={isLoginModalOpen} onOk={handleOk} onCancel={handleCancel}>
                 <Input value={userData.username} onChange={handleUsername} placeholder="Username" />
                 <Input value={userData.password} onChange={handlePassword} placeholder="Password" style={{marginTop:"10px"}}/>
+                {isError &&
+                    <Alert
+                        style={{marginTop: "15px"}}
+                        description="Data you entered is invalid"
+                        type="error"
+                        showIcon
+                    />
+                }
             </Modal>
         </>
     );

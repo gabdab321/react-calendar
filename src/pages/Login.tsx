@@ -1,27 +1,18 @@
-import React, {useState} from 'react';
-import Navbar from "../components/Navbar/Navbar";
+import React from 'react';
 import classes from "./styles/Login.module.scss"
 import LoginModal from "../components/LoginModal";
 import SignUpModal from "../components/SignUpModal";
+import {useAppDispatch, useAppSelector} from "../hooks/redux";
+import {showSignModal, showLoginModal} from "../redux/slices/modalsSlice";
 
 const Login = () => {
-    const [isSignModalOpen, setIsSignModalOpen] = useState(false);
-    const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-
-    function showLoginModal() {
-        setIsLoginModalOpen(true)
-    }
-
-    function showSignModal() {
-        setIsSignModalOpen(true)
-    }
+    const dispatch = useAppDispatch()
 
     return (
         <div className={classes.main}>
-            <SignUpModal isModalOpen={isSignModalOpen} setIsModalOpen={setIsSignModalOpen}/>
-            <LoginModal isModalOpen={isLoginModalOpen} setIsModalOpen={setIsLoginModalOpen}/>
-            <Navbar showLoginModal={showLoginModal} showSignModal={showSignModal}/>
-            <div className={classes.text}>Please, <a onClick={showSignModal}>sign up</a> or <a onClick={showLoginModal}>log in</a> to continue</div>
+            <SignUpModal/>
+            <LoginModal/>
+            <div className={classes.text}>Please, <a onClick={() => dispatch(showSignModal())}>sign up</a> or <a onClick={() => dispatch(showLoginModal())}>log in</a> to continue</div>
         </div>
     );
 };
